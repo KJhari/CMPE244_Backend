@@ -11,6 +11,5 @@ uvicorn python-main:app --reload
 ```
 
 for jetson
-'''
-python -m uvicorn python-main:app --reload
-'''
+```python -m uvicorn python-main:app --host 0.0.0.0 --port 8000 --reload
+```
