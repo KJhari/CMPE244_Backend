@@ -66,13 +66,9 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-# Mock function to simulate LSM303 sensor data
-# def mock_lsm303_data():
-#     # Simulate sensor data (e.g., accelerometer and magnetometer readings)
-#     sucess = True
-#     accelerometer_data = {"x": random.uniform(-1, 1), "y": random.uniform(-1, 1), "z": random.uniform(-1, 1)}
-#     magnetometer_data = {"x": random.uniform(-30, 30), "y": random.uniform(-30, 30), "z": random.uniform(-30, 30)}
-#     return {"accelerometer": accelerometer_data, "magnetometer": magnetometer_data, "sucess":sucess}
+def mock_motor_error():
+    raise Exception("Mock motor error for testing")
+
 
 # Mock function of chatpgt
 def mock_gpt(question):
@@ -84,6 +80,8 @@ def mock_gpt(question):
 async def run_motor(data: MotorData):
    # Motor and sensor logic
     try:
+        # Uncomment the following line to simulate an error
+        mock_motor_error()
         # Read sensor data before
         sensor_data_result_before = read_sensor_data(accel,mag)
         Frequency = data.Frequency
