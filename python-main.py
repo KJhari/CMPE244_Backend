@@ -20,7 +20,7 @@ from gpt_test import query_gpt_3_5_turbo
 
 #GPT parameters
 api_key = "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"
-model_id = "ft:gpt-3.5-turbo-0613:personal::8Si57snJ"
+model_id = "ft:gpt-3.5-turbo-0613:personal::8Sj8AGxU"
 
 # Define the GPIO pin numbers
 GREEN_LED_PIN = 36  # First LED
