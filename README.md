@@ -1,19 +1,5 @@
 # CMPE-244-backend
 
-take a clone and then run the following command
-```
-pip install fastapi uvicorn
-```
-
-To run the application run
-```
-uvicorn python-main:app --reload
-```
-
-for jetson
-```
-python -m uvicorn python-main:app --host 0.0.0.0 --port 8000 --reload
-```
 Project Name: FastAPI Backend for Motor Control and Sensor Data Processing
 Description
 This project implements a backend server using FastAPI to control a NEMA17 stepper motor and process data from an LSM303 sensor. The server provides endpoints to initiate motor movements and read sensor data, facilitating precise control and monitoring of the motor's orientation.
@@ -44,7 +30,10 @@ Install Additional Dependencies:
 
 bash
 Copy code
-pip install -r requirements.txt
+```
+pip install fastapi uvicorn
+```
+
 Usage
 Running the Server
 To start the FastAPI server, run the following command in your terminal:
