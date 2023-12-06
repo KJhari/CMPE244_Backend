@@ -78,6 +78,8 @@ def mock_gpt(question):
 async def run_motor(data: MotorData):
    # Motor and sensor logic
     try:
+        # Read sensor data before
+        sensor_data_result_before = read_sensor_data(accel,mag)
         Frequency = data.Frequency
         Duty_Cycle = data.Duty_Cycle
         if(data.Direction == 0):
@@ -93,7 +95,7 @@ async def run_motor(data: MotorData):
             Degree = data.Degree
             Rotate_x_degrees.rotate_motor_degrees(GPIO, STEP_PIN,DIR_PIN, TIME ,Degree, Direction, Frequency, Duty_Cycle)
         
-        # Read sensor data
+        # Read sensor data after
         sensor_data_result = read_sensor_data(accel,mag)
         
         #request info
@@ -104,19 +106,25 @@ async def run_motor(data: MotorData):
         
         # Check if an error was returned from sensor data reading: if not tuple then error
         if isinstance(sensor_data_result, tuple):
-            acc_x, acc_y, acc_z, m_x, m_y, m_z, angle_yz, heading = sensor_data_result
+            acc_x_b, acc_y_b, acc_z_b, m_x_b, m_y_b, m_z_b, heading_b = sensor_data_result_before
+            acc_x, acc_y, acc_z, m_x, m_y, m_z, heading = sensor_data_result
             sensor_data = {
                 "accelerometer": {"x": acc_x, "y": acc_y, "z": acc_z},
                 "magnetometer": {"x": m_x, "y": m_y, "z": m_z},
-                "angle_yz": angle_yz,
                 "heading":heading
+            }
+            sensor_data_b = {
+                "accelerometer": {"x": acc_x_b, "y": acc_y_b, "z": acc_z_b},
+                "magnetometer": {"x": m_x_b, "y": m_y_b, "z": m_z_b},
+                "heading":heading_b
             }
             LED_control.turn_on_green_led(GPIO, GREEN_LED_PIN)
             LED_control.turn_off_red_led(GPIO, GREEN_LED_PIN)
             return {
                 "message": "Motor run successfully with the provided data",
                 "data": data,
-                "sensor_data": sensor_data
+                "sensor_data": sensor_data,
+                "sensor_data_b" : sensor_data_b
             }
         else:
             LED_control.turn_off_green_led(GPIO, GREEN_LED_PIN)
@@ -136,9 +144,6 @@ async def gpt_prompt(data: GptData):
     print('question: ' + data.prompt)
     response_text = mock_gpt(data.prompt)
     return {"responseText": response_text}
-
-
-
 
 
 # Run the application using Uvicorn
