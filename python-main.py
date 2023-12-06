@@ -42,7 +42,7 @@ mag = adafruit_lsm303dlh_mag.LSM303DLH_Mag(i2c)
 # Init LED steup
 LED_control.setup_leds(GPIO, GREEN_LED_PIN, RED_LED_PIN)
 LED_control.turn_off_green_led(GPIO, GREEN_LED_PIN)
-LED_control.turn_off_red_led(GPIO, GREEN_LED_PIN)
+LED_control.turn_off_red_led(GPIO, RED_LED_PIN)
 
 # Pydantic model
 class MotorData(BaseModel):
@@ -67,6 +67,8 @@ app.add_middleware(
 )
 
 def mock_motor_error():
+    LED_control.turn_off_green_led(GPIO, GREEN_LED_PIN)
+    LED_control.turn_on_red_led(GPIO, RED_LED_PIN)
     raise Exception("Mock motor error for testing")
 
 
@@ -81,7 +83,7 @@ async def run_motor(data: MotorData):
    # Motor and sensor logic
     try:
         # Uncomment the following line to simulate an error
-        mock_motor_error()
+        #mock_motor_error()
         # Read sensor data before
         sensor_data_result_before = read_sensor_data(accel,mag)
         Frequency = data.Frequency
@@ -123,7 +125,7 @@ async def run_motor(data: MotorData):
                 "heading":heading_b
             }
             LED_control.turn_on_green_led(GPIO, GREEN_LED_PIN)
-            LED_control.turn_off_red_led(GPIO, GREEN_LED_PIN)
+            LED_control.turn_off_red_led(GPIO, RED_LED_PIN)
             return {
                 "message": "Motor run successfully with the provided data",
                 "data": data,
@@ -132,7 +134,7 @@ async def run_motor(data: MotorData):
             }
         else:
             LED_control.turn_off_green_led(GPIO, GREEN_LED_PIN)
-            LED_control.turn_on_red_led(GPIO, GREEN_LED_PIN)
+            LED_control.turn_on_red_led(GPIO, RED_LED_PIN)
             raise ValueError(sensor_data_result)
         
     except Exception as e:

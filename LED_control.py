@@ -8,8 +8,8 @@ def turn_on_green_led(GPIO, GREEN_LED_PIN):
 def turn_off_green_led(GPIO, GREEN_LED_PIN):
     GPIO.output(GREEN_LED_PIN, GPIO.LOW)
 
-def turn_on_red_led(GPIO, GREEN_LED_PIN):
-    GPIO.output(GREEN_LED_PIN, GPIO.HIGH)
+def turn_on_red_led(GPIO, RED_LED_PIN):
+    GPIO.output(RED_LED_PIN, GPIO.HIGH)
 
-def turn_off_red_led(GPIO, GREEN_LED_PIN):
-    GPIO.output(GREEN_LED_PIN, GPIO.LOW)
+def turn_off_red_led(GPIO, RED_LED_PIN):
+    GPIO.output(RED_LED_PIN, GPIO.LOW)
