@@ -14,7 +14,13 @@ import board
 import busio
 import adafruit_lsm303_accel
 import adafruit_lsm303dlh_mag
+import openai
+from gpt_test import query_gpt_3_5_turbo
 
+
+#GPT parameters
+api_key = "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"
+model_id = "ft:gpt-3.5-turbo-0613:personal::8Si57snJ"
 
 # Define the GPIO pin numbers
 GREEN_LED_PIN = 36  # First LED
@@ -142,7 +148,8 @@ async def run_motor(data: MotorData):
 @app.post("/gpt-prompt")
 async def gpt_prompt(data: GptData):
     print('question: ' + data.prompt)
-    response_text = mock_gpt(data.prompt)
+    response_text = query_gpt_3_5_turbo(data.prompt, model_id, api_key)
+    #response_text = mock_gpt(data.prompt)
     return {"responseText": response_text}
 
 
