@@ -33,12 +33,12 @@ i2c = busio.I2C(board.SCL, board.SDA)
 accel = adafruit_lsm303_accel.LSM303_Accel(i2c)
 mag = adafruit_lsm303dlh_mag.LSM303DLH_Mag(i2c)
 
-#Init LED steup
+# Init LED steup
 LED_control.setup_leds(GPIO, GREEN_LED_PIN, RED_LED_PIN)
 LED_control.turn_off_green_led(GPIO, GREEN_LED_PIN)
 LED_control.turn_off_red_led(GPIO, GREEN_LED_PIN)
 
-# Define a Pydantic model for the request data
+# Pydantic model
 class MotorData(BaseModel):
     Frequency: int
     Duty_Cycle: int
@@ -46,7 +46,10 @@ class MotorData(BaseModel):
     Time: Optional[int] = None  # Make Time optional
     Degree: Optional[int] = None  # Make Degree optional
 
-# Create an instance of FastAPI
+class GptData(BaseModel):
+    prompt: str
+
+# FastAPI instance
 app = FastAPI()
 # Configure CORS
 app.add_middleware(
@@ -58,18 +61,22 @@ app.add_middleware(
 )
 
 # Mock function to simulate LSM303 sensor data
-def mock_lsm303_data():
-    # Simulate sensor data (e.g., accelerometer and magnetometer readings)
-    sucess = True
-    accelerometer_data = {"x": random.uniform(-1, 1), "y": random.uniform(-1, 1), "z": random.uniform(-1, 1)}
-    magnetometer_data = {"x": random.uniform(-30, 30), "y": random.uniform(-30, 30), "z": random.uniform(-30, 30)}
-    return {"accelerometer": accelerometer_data, "magnetometer": magnetometer_data, "sucess":sucess}
+# def mock_lsm303_data():
+#     # Simulate sensor data (e.g., accelerometer and magnetometer readings)
+#     sucess = True
+#     accelerometer_data = {"x": random.uniform(-1, 1), "y": random.uniform(-1, 1), "z": random.uniform(-1, 1)}
+#     magnetometer_data = {"x": random.uniform(-30, 30), "y": random.uniform(-30, 30), "z": random.uniform(-30, 30)}
+#     return {"accelerometer": accelerometer_data, "magnetometer": magnetometer_data, "sucess":sucess}
 
-# Define the POST endpoint
+# Mock function of chatpgt
+def mock_gpt(question):
+    return "answer"
+
+
+# POST endpoint
 @app.post("/run-motor")
 async def run_motor(data: MotorData):
-    # Process the data here
-    # For example, you can print it or pass it to another function
+   # Motor and sensor logic
     try:
         Frequency = data.Frequency
         Duty_Cycle = data.Duty_Cycle
@@ -88,15 +95,14 @@ async def run_motor(data: MotorData):
         
         # Read sensor data
         sensor_data_result = read_sensor_data(accel,mag)
+        
+        #request info
         print(data)
-        # call your function
-        # result = yourFunction(value1, value2, value3)
-        
-        
+    
         # Call the mock LSM303 data function after motor operation
         #sensor_data = mock_lsm303_data()
         
-        # Check if an error was returned from sensor data reading
+        # Check if an error was returned from sensor data reading: if not tuple then error
         if isinstance(sensor_data_result, tuple):
             acc_x, acc_y, acc_z, m_x, m_y, m_z, angle_yz, heading = sensor_data_result
             sensor_data = {
@@ -115,7 +121,6 @@ async def run_motor(data: MotorData):
         else:
             LED_control.turn_off_green_led(GPIO, GREEN_LED_PIN)
             LED_control.turn_on_red_led(GPIO, GREEN_LED_PIN)
-            # If sensor_data_result is not a tuple, it's an error message
             raise ValueError(sensor_data_result)
         
     except Exception as e:
@@ -125,6 +130,17 @@ async def run_motor(data: MotorData):
             "error": str(e),
             "data": data
     }
+
+@app.post("/gpt-prompt")
+async def gpt_prompt(data: GptData):
+    print('question: ' + data.prompt)
+    response_text = mock_gpt(data.prompt)
+    return {"responseText": response_text}
+
+
+
+
+
 # Run the application using Uvicorn
 if __name__ == "__main__":
     import uvicorn

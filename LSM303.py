@@ -7,9 +7,8 @@ def angle_XY(x, y):
 
 def calculate_heading(m_x, m_y):
     heading = math_degrees(atan2(m_y, m_x))
-    # Correct for negative values
-    if heading < 0:
-        heading += 360
+    # if heading < 0:
+    #     heading += 360
     return heading
 
 
