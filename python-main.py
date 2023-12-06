@@ -44,6 +44,7 @@ LED_control.setup_leds(GPIO, GREEN_LED_PIN, RED_LED_PIN)
 LED_control.turn_off_green_led(GPIO, GREEN_LED_PIN)
 LED_control.turn_off_red_led(GPIO, RED_LED_PIN)
 
+
 # Pydantic model
 class MotorData(BaseModel):
     Frequency: int
